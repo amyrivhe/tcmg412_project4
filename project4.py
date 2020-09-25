@@ -17,12 +17,14 @@ if not os.path.isfile('cache.log'):
 # read file
 file = open("cache.log", "r")
 
-number_of_requests_last_year = 0
+
 number_of_requests_total = 0
 
 for line in file:
 
     if "[" in line:
+        number_of_requests_total += 1
+        
         start = line.find("[") + len("[")
         end = line.find("]")
         substring = line[start:end]
@@ -30,14 +32,11 @@ for line in file:
         format_str = '%d/%b/%Y:%H:%M:%S %z'
         datetime_obj = datetime.datetime.strptime(substring, format_str)
 
-        if datetime_obj.year == 1995:
-            number_of_requests_last_year += 1
 
-        number_of_requests_total += 1
+        
 
 
 file.close()
 
 # output results
-print("requests made in last year:", number_of_requests_last_year, ",",
-      "requests made in entire log period:", number_of_requests_total)
+print("requests made in entire log period:", number_of_requests_total)
