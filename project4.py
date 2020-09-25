@@ -19,6 +19,7 @@ file = open("cache.log", "r")
 
 
 number_of_requests_total = 0
+days = {"Monday": 0, "Tuesday": 0, "Wednesday": 0, "Thursday": 0, "Friday": 0, "Saturday": 0, "Sunday": 0}
 
 for line in file:
 
@@ -31,6 +32,9 @@ for line in file:
 
         format_str = '%d/%b/%Y:%H:%M:%S %z'
         datetime_obj = datetime.datetime.strptime(substring, format_str)
+        
+        weekday_name = datetime_obj.strftime("%A")
+        days[weekday_name] += 1
 
 
         
@@ -39,4 +43,7 @@ for line in file:
 file.close()
 
 # output results
-print("requests made in entire log period:", number_of_requests_total)
+print("requests made in entire log period:", number_of_requests_total, "\n")
+
+for weekday_name in days:
+    print(weekday_name, ":", days[weekday_name])
