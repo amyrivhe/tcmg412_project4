@@ -6,6 +6,7 @@ import datetime
 import urllib.request
 import os
 import re
+from collections import Counter
 
 # Main Program
 
@@ -23,6 +24,7 @@ number_of_requests_total = 0
 days = {"Monday": 0, "Tuesday": 0, "Wednesday": 0, "Thursday": 0, "Friday": 0, "Saturday": 0, "Sunday": 0}
 weeks = {}
 months = {}
+files = {}
 number_of_error = 0
 number_of_redirect = 0
 
@@ -58,6 +60,12 @@ for line in file:
         
         if re.search("\".*\" 3..", line) is not None:
             number_of_redirect += 1
+            
+        filename = line.split(" ")[6]
+        if filename in files:
+            files[filename] += 1
+        else:
+            files[filename] = 1
 
 
         
@@ -85,3 +93,10 @@ print()
 
 print("Percentage of Requests as Errors: ", round((number_of_error * 100) / number_of_requests_total, 2), "%")
 print("Percentage of Requests as Redirects: ", round((number_of_redirect * 100) / number_of_requests_total, 2), "%")
+
+print()
+
+most_requested_file = Counter(files).most_common(1)[0][0]
+least_requested_file = Counter(files).most_common()[-1][0]
+print("Most requested file:", most_requested_file)
+print("Least requested file:", least_requested_file)
