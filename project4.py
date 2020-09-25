@@ -19,45 +19,52 @@ if not os.path.isfile('cache.log'):
 # read file
 file = open("cache.log", "r")
 
-
+# variables and dictionaries
 number_of_requests_total = 0
+number_of_error = 0
+number_of_redirect = 0
 days = {"Monday": 0, "Tuesday": 0, "Wednesday": 0, "Thursday": 0, "Friday": 0, "Saturday": 0, "Sunday": 0}
 weeks = {}
 months = {}
 files = {}
-number_of_error = 0
-number_of_redirect = 0
 
 previous_month_file = ""
 month_file = ""
 
+# loop through and parse log file
 for line in file:
 
+    # valid requests
     if "[" in line:
         number_of_requests_total += 1
         
+        # parse date substring
         start = line.find("[") + len("[")
         end = line.find("]")
         substring = line[start:end]
 
+        # translate to datetime
         format_str = '%d/%b/%Y:%H:%M:%S %z'
         datetime_obj = datetime.datetime.strptime(substring, format_str)
         
+        # add count in dictionary for keys
+        # week day
         weekday_name = datetime_obj.strftime("%A")
         days[weekday_name] += 1
-        
+        # week year
         week_year = "week " + str(datetime_obj.isocalendar()[1]) + " of " + str(datetime_obj.year)
         if week_year in weeks:
             weeks[week_year] += 1
         else:
             weeks[week_year] = 1
-            
+        # month year
         month_year = datetime_obj.strftime("%B") + " " + str(datetime_obj.year)
         if month_year in months:
             months[month_year] += 1
         else:
             months[month_year] = 1
-            
+        
+        # breakout into monthly log files
         current_month_file = datetime_obj.strftime("%B") + str(datetime_obj.year) + ".log"
         if previous_month_file != current_month_file:
             previous_month_file = current_month_file
@@ -68,22 +75,21 @@ for line in file:
                 month_file = open(current_month_file, "a")
 
         month_file.write(line)
-            
+        
+        # 4xx codes = unsuccessful requests
         if re.search("\".*\" 4..", line) is not None:
             number_of_error += 1
         
+        # 3xx codes = redirected requests
         if re.search("\".*\" 3..", line) is not None:
             number_of_redirect += 1
-            
+        
+        # file names
         filename = line.split(" ")[6]
         if filename in files:
             files[filename] += 1
         else:
             files[filename] = 1
-
-
-        
-
 
 file.close()
 
