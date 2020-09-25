@@ -28,6 +28,9 @@ files = {}
 number_of_error = 0
 number_of_redirect = 0
 
+previous_month_file = ""
+month_file = ""
+
 for line in file:
 
     if "[" in line:
@@ -54,6 +57,17 @@ for line in file:
             months[month_year] += 1
         else:
             months[month_year] = 1
+            
+        current_month_file = datetime_obj.strftime("%B") + str(datetime_obj.year) + ".log"
+        if previous_month_file != current_month_file:
+            previous_month_file = current_month_file
+            if not os.path.isfile(current_month_file):
+                month_file = open(current_month_file, "a")
+            else:
+                open(current_month_file, "w").close()
+                month_file = open(current_month_file, "a")
+
+        month_file.write(line)
             
         if re.search("\".*\" 4..", line) is not None:
             number_of_error += 1
