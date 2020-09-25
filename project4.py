@@ -2,20 +2,20 @@
 # Amy He -UIN 726005518 -TCMG-412-500
 
 # Imports
-import requests
 import datetime
+import urllib.request
+import os
 
 # Main Program
 
 
-# download log file
-log_file_full_path = "/home/usr/tcmglogfile.txt"
-url = 'https://s3.amazonaws.com/tcmg476/http_access_log'
-myfile = requests.get(url)
-open(log_file_full_path, 'wb').write(myfile.content)
+# retrieve log file
+if not os.path.isfile('cache.log'):
+    url = 'https://s3.amazonaws.com/tcmg476/http_access_log'
+    urllib.request.urlretrieve(url, 'cache.log')
 
-# read and parse file
-file = open(log_file_full_path, "r")
+# read file
+file = open("cache.log", "r")
 
 number_of_requests_last_year = 0
 number_of_requests_total = 0
