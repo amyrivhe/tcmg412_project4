@@ -21,6 +21,7 @@ file = open("cache.log", "r")
 number_of_requests_total = 0
 days = {"Monday": 0, "Tuesday": 0, "Wednesday": 0, "Thursday": 0, "Friday": 0, "Saturday": 0, "Sunday": 0}
 weeks = {}
+months = {}
 
 for line in file:
 
@@ -42,6 +43,12 @@ for line in file:
             weeks[week_year] += 1
         else:
             weeks[week_year] = 1
+            
+        month_year = datetime_obj.strftime("%B") + " " + str(datetime_obj.year)
+        if month_year in months:
+            months[month_year] += 1
+        else:
+            months[month_year] = 1
 
 
         
@@ -59,3 +66,8 @@ print()
 
 for week_year in weeks:
     print(week_year, ":", weeks[week_year])
+
+print()
+
+for month_year in months:
+    print(month_year, ":", months[month_year])
