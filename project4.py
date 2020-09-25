@@ -34,7 +34,7 @@ month_file = ""
 # loop through and parse log file
 for line in file:
 
-    # valid requests
+    # valid requests only
     if "[" in line:
         number_of_requests_total += 1
         
