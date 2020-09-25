@@ -5,6 +5,7 @@
 import datetime
 import urllib.request
 import os
+import re
 
 # Main Program
 
@@ -22,6 +23,8 @@ number_of_requests_total = 0
 days = {"Monday": 0, "Tuesday": 0, "Wednesday": 0, "Thursday": 0, "Friday": 0, "Saturday": 0, "Sunday": 0}
 weeks = {}
 months = {}
+number_of_error = 0
+number_of_redirect = 0
 
 for line in file:
 
@@ -49,6 +52,12 @@ for line in file:
             months[month_year] += 1
         else:
             months[month_year] = 1
+            
+        if re.search("\".*\" 4..", line) is not None:
+            number_of_error += 1
+        
+        if re.search("\".*\" 3..", line) is not None:
+            number_of_redirect += 1
 
 
         
@@ -71,3 +80,8 @@ print()
 
 for month_year in months:
     print(month_year, ":", months[month_year])
+    
+print()
+
+print("Percentage of Requests as Errors: ", round((number_of_error * 100) / number_of_requests_total, 2), "%")
+print("Percentage of Requests as Redirects: ", round((number_of_redirect * 100) / number_of_requests_total, 2), "%")
